@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ldh.android.dragslidelayout.DragLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drag_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <Button
-        android:id="@+id/sample_text"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="drag me"
-        android:background="@color/colorPrimary"/>
+        android:background="@android:color/holo_red_light"
+        android:fitsSystemWindows="true"/>
 
-</com.ldh.android.dragslidelayout.DragLayout>
+    <com.ldh.android.dragslidelayout.DragLayout
+        android:id="@+id/drag_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/sample_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="drag me"/>
+    </com.ldh.android.dragslidelayout.DragLayout>
+
+</RelativeLayout>

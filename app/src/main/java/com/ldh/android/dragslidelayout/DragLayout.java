@@ -72,6 +72,10 @@ public class DragLayout extends RelativeLayout {
         mHeight = h;
     }
 
+    public void setDragView(@NonNull View view) {
+        mDragView = view;
+    }
+
     public void setViewToTop(View view) {//标题隐藏了
         mTitleView = view;
         isTitleShow = false;
@@ -308,11 +312,6 @@ public class DragLayout extends RelativeLayout {
     @Override
     public boolean isInEditMode() {
         return true;
-    }
-
-
-    public void setDragView(@NonNull View view) {
-        mDragView = view;
     }
 
 }
