@@ -41,15 +41,17 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         super.onCreate(savedInstanceState);
         Utils.setWindowNoStatusBar(this);
         setContentView(R.layout.activity_main);
+        mTitleShowHandler = new Handler(this);
         mDragLayout = findViewById(R.id.drag_layout);
         mButton = findViewById(R.id.sample_text);
         mToolbar = findViewById(R.id.toolBar);
+        // TODO: 2018/8/7 组合调用，否则可能出现null
         mDragLayout.setDragView(mButton);
         mDragLayout.setViewBelowTitle(mToolbar);
-        setTitleTimer();
-        mTitleShowHandler = new Handler();
-        mButton.setOnClickListener(v -> blackZoneClick());
+        mDragLayout.setClickable(true);
 
+        setTitleTimer();
+        mDragLayout.setOnDragLayoutClickListener(()->blackZoneClick());
     }
 
     public void setTitleTimer() {

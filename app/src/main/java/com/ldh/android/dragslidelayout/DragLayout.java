@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -28,7 +29,7 @@ public class DragLayout extends RelativeLayout {
     public static final String POS_LEFT_TOP_MARGIN_TITLE = "POS_LEFT_TOP_MARGIN_TITLE";
     public static final String POS_RIGHT_TOP_MARGIN_TITLE = "POS_RIGHT_TOP_MARGIN_TITLE";
 
-    private String mCurrentPos = POS_RIGHT_TOP_MARGIN_TITLE;
+    private String mCurrentPos = POS_LEFT_TOP_MARGIN_TITLE;
 
     private int mCurrentLeft;
     private int mCurrentTop;
@@ -39,11 +40,11 @@ public class DragLayout extends RelativeLayout {
     private int mWidth;
     private int mHeight;
 
-    private TranslateAnimation mTranslateAnimation;
-
     private View mTitleView;//标题栏
 
     private boolean isTitleShow = true;
+
+    private boolean isClickable;//若设置为true，可允许该viewGroup拦截点击事件。默认为false
 
     public DragLayout(Context context) {
         this(context, null);
@@ -72,11 +73,17 @@ public class DragLayout extends RelativeLayout {
         mHeight = h;
     }
 
+    public void setDragedViewPos(String currentPos){
+        mCurrentPos = currentPos;
+    }
+
     public void setDragView(@NonNull View view) {
         mDragView = view;
     }
 
     public void setViewToTop(View view) {//标题隐藏了
+        if(mDragView == null)
+            throw new IllegalStateException("have not setDragView");
         mTitleView = view;
         isTitleShow = false;
         if (POS_LEFT_TOP_MARGIN_TITLE.equals(mCurrentPos)) {
@@ -94,6 +101,8 @@ public class DragLayout extends RelativeLayout {
     }
 
     public void setViewBelowTitle(View view) {//标题显示了
+        if(mDragView == null)
+            throw new IllegalStateException("have not setDragView");
         mTitleView = view;
         isTitleShow = true;
         if (POS_LEFT_TOP.equals(mCurrentPos)) {
@@ -107,6 +116,10 @@ public class DragLayout extends RelativeLayout {
             mCurrentPos = POS_RIGHT_TOP_MARGIN_TITLE;
             setTranslate(mCurrentPos);
         }
+    }
+
+    public void setClickable(boolean isClickable) {
+        this.isClickable = isClickable;
     }
 
     private class ViewDragCallBack extends ViewDragHelper.Callback {
@@ -223,7 +236,7 @@ public class DragLayout extends RelativeLayout {
                 dy = -mCurrentTop + (mTitleView == null ? 0 : mTitleView.getMeasuredHeight());
                 break;
         }
-        mTranslateAnimation = new TranslateAnimation(0, dx, 0, dy);
+        TranslateAnimation mTranslateAnimation = new TranslateAnimation(0, dx, 0, dy);
         mTranslateAnimation.setDuration(TIME_TITLE_SHOW_HIDE);
         mTranslateAnimation.setFillAfter(true);
         mTranslateAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -266,12 +279,12 @@ public class DragLayout extends RelativeLayout {
                     case POS_LEFT_TOP_MARGIN_TITLE:
                         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                        params.setMargins(0, mTitleView == null?0:mTitleView.getMeasuredHeight(), 0, 0);
+                        params.setMargins(0, mTitleView == null ? 0 : mTitleView.getMeasuredHeight(), 0, 0);
                         break;
                     case POS_RIGHT_TOP_MARGIN_TITLE:
                         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                        params.setMargins(0, mTitleView == null?0:mTitleView.getMeasuredHeight(), 0, 0);
+                        params.setMargins(0, mTitleView == null ? 0 : mTitleView.getMeasuredHeight(), 0, 0);
                         break;
                 }
                 mDragView.setLayoutParams(params);
@@ -305,6 +318,10 @@ public class DragLayout extends RelativeLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN && isClickable)
+            if (mOnDragLayoutClickListener != null) {
+                mOnDragLayoutClickListener.layoutClick();
+            }
         mViewDragHelper.processTouchEvent(event);
         return true;
     }
@@ -312,6 +329,17 @@ public class DragLayout extends RelativeLayout {
     @Override
     public boolean isInEditMode() {
         return true;
+    }
+
+    public interface OnDragLayoutClickListener {//点击可移动的view之外的区域
+
+        void layoutClick();
+    }
+
+    private OnDragLayoutClickListener mOnDragLayoutClickListener;
+
+    public void setOnDragLayoutClickListener(OnDragLayoutClickListener listener) {
+        mOnDragLayoutClickListener = listener;
     }
 
 }

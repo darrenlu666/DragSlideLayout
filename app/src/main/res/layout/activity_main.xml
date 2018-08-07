@@ -11,19 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_red_light"
-        android:fitsSystemWindows="true"/>
+        android:clipToPadding="true"/>
 
     <com.ldh.android.dragslidelayout.DragLayout
         android:id="@+id/drag_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clickable="true">
 
         <Button
             android:id="@+id/sample_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:text="drag me"/>
+            android:text="drag me"
+            android:layout_marginTop="56dp"/>
     </com.ldh.android.dragslidelayout.DragLayout>
 
 </RelativeLayout>
