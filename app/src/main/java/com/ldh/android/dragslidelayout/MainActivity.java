@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
     private boolean mAnimating;//是否在动画进行中
 
+    private DragLayout.DragLayoutBuilder builder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,11 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         mDragLayout = findViewById(R.id.drag_layout);
         mButton = findViewById(R.id.sample_text);
         mToolbar = findViewById(R.id.toolBar);
-        // TODO: 2018/8/7 组合调用，否则可能出现null
-        mDragLayout.setDragView(mButton);
-        mDragLayout.setViewBelowTitle(mToolbar);
-        mDragLayout.setClickable(true);
+        builder = new DragLayout.DragLayoutBuilder(this,mDragLayout)
+                .setDragView(mButton)
+                .setViewBelowTitle(mToolbar)
+                .setBlankZoneClickable(true)
+                .build();
 
         setTitleTimer();
         mDragLayout.setOnDragLayoutClickListener(()->blackZoneClick());
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
                 }
             });
             anim.start();
-            mDragLayout.setViewBelowTitle(view);
+            builder.getDragLayout().setViewBelowTitle(view);
             mAnimating = true;
         }
     }
@@ -127,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
             ObjectAnimator anim = ObjectAnimator.ofFloat(view, "y", view.getY(), view.getY() - view.getHeight());
             anim.setDuration(TIME_TITLE_SHOW_HIDE);
             anim.start();
-            mDragLayout.setViewToTop(view);
+            builder.getDragLayout().setViewToTop(view);
             mAnimating = true;
             anim.addListener(new Animator.AnimatorListener() {
                 @Override

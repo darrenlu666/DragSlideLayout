@@ -73,11 +73,55 @@ public class DragLayout extends RelativeLayout {
         mHeight = h;
     }
 
-    public void setDragedViewPos(String currentPos){
+    public static class DragLayoutBuilder{
+
+        private Context mContext;
+
+        private View mDragView;
+
+        private View mTitleView;
+
+        private boolean isClickable;
+
+        private DragLayout mDragLayout;
+
+        public DragLayoutBuilder(Context context,DragLayout dragLayout) {
+            mContext = context;
+            mDragLayout = dragLayout;
+        }
+
+        public DragLayout getDragLayout() {
+            return mDragLayout;
+        }
+
+        public DragLayoutBuilder setDragView(View view) {
+            mDragView = view;
+            return this;
+        }
+
+        public DragLayoutBuilder setViewBelowTitle(View view) {
+            mTitleView = view;
+            return this;
+        }
+
+        public DragLayoutBuilder setBlankZoneClickable(boolean isClickable) {
+            this.isClickable = isClickable;
+            return this;
+        }
+
+        public DragLayoutBuilder build(){
+            mDragLayout.setDragView(mDragView);
+            mDragLayout.setViewBelowTitle(mTitleView);
+            mDragLayout.setBlankZoneClickable(isClickable);
+            return this;
+        }
+    }
+
+    private void setDragedViewPos(String currentPos){
         mCurrentPos = currentPos;
     }
 
-    public void setDragView(@NonNull View view) {
+    private void setDragView(@NonNull View view) {
         mDragView = view;
     }
 
@@ -118,7 +162,7 @@ public class DragLayout extends RelativeLayout {
         }
     }
 
-    public void setClickable(boolean isClickable) {
+    private void setBlankZoneClickable(boolean isClickable) {
         this.isClickable = isClickable;
     }
 
